@@ -14,7 +14,7 @@ export default function FooterComponent() {
     <MDBFooter
       className="text-center"
       color="white"
-      style={{ marginTop: "30px" }}
+      style={{ marginTop: "35px" }}
       bgColor="dark"
     >
       <MDBContainer className="p-4">
@@ -103,10 +103,10 @@ export default function FooterComponent() {
       </MDBContainer>
 
       <div
-        className="text-center p-3"
+        className="text-center p-2"
         style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
       >
-        © 2022 Copyright:
+        © 2022 Copyright{" "}
         <a className="text-white" href="https://github.com/MalekJamal">
           Malek Hamdan
         </a>

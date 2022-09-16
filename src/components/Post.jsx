@@ -4,15 +4,13 @@ import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import AddCommentForm from "./AddCommentForm";
+import Comment from "./Comment";
 
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
- 
 
   return (
     <div
@@ -26,27 +24,36 @@ const Post = (props) => {
         flexDirection: "column",
       }}
     >
-      <Row xs={1} md={3} className="g-3">
+      <Row xs={1} md={3} className="g-4">
         {props.posts &&
           props.posts.map((post, idx) => (
             <Col key={idx}>
               <Card
                 style={{
-                    
+                  marginTop: "15px",
                   width: "100%",
                   height: "100%",
                   flexDirection: "column",
                   display: "flex",
                   alignItems: "center",
-                  boxShadow:"10px 10px 10px 10px #8888"
+                  boxShadow: "10px 10px 10px 10px #8888",
                 }}
               >
-                <Card.Img variant="top" src={post.imgUrl} />
+                <Card.Img
+                  variant="top"
+                  src={post.imgUrl}
+                  style={{
+                    height: "300px",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
                 <Card.Body>
-                  <h3>
-                    {post.title}
-                  </h3>
+                  <h4>{post.title}</h4>
                   <Card.Text>{post.body}</Card.Text>
+                  <small style={{ fontSize: "10px" }}>
+                    Added By {post.createdBy}
+                  </small>
                 </Card.Body>
                 <Card.Footer
                   style={{
@@ -58,18 +65,16 @@ const Post = (props) => {
                 >
                   {post.Comments &&
                     post.Comments.map((comment, idx) => (
-                      <ul
+                      <Comment
                         key={idx}
-                        style={{
-                          border: "2px solid black",
-                          listStyleType: "none",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        <li style={{width:"100%", textAlign:"center"}}>{comment.comment} </li>
-                      </ul>
+                        comment={comment.comment}
+                        createdBy={comment.createdBy}
+                        date={comment.createdAt}
+                      />
                     ))}
+
                   <Button
+                    style={{ margin: "5px" }}
                     variant="dark"
                     onClick={() => {
                       handleShow(true);
