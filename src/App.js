@@ -14,7 +14,6 @@ function App(props) {
   const { isAuthenticated } = useAuth0();
 
   const getPosts = async () => {
-
     const posts = await axios.get(`${process.env.REACT_APP_SERVER}/post`);
     setPostsData(posts.data);
 
@@ -37,10 +36,7 @@ function App(props) {
 
           <AddPostForm getPosts={getPosts} />
         }
-
-
         <Post posts={postsData} getPosts={getPosts} />
-
       </div>
       <FooterComponent />
 

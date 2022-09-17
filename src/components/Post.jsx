@@ -5,12 +5,16 @@ import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import DeletePost from "./DeletePost";
+import EditPost from "./EditPost";
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const { isAuthenticated } = useAuth0();
 
   return (
     <div
@@ -41,6 +45,7 @@ const Post = (props) => {
               >
                 <Card.Img
                   variant="top"
+                  alt="Image"
                   src={post.imgUrl}
                   style={{
                     height: "300px",
@@ -48,7 +53,34 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                <Card.Body>
+                {isAuthenticated && post.userEmail ? (
+                  <div
+                    style={{
+                      float: "right",
+                      clear: "both",
+                      marginLeft: "auto",
+                      marginTop: "8px",
+                      marginRight: "8px",
+                      display: "flex",
+                      gap: 18,
+                    }}
+                  >
+                    <DeletePost
+                      postCreatorEmail={post.userEmail}
+                      postID={post.id}
+                      getPosts={props.getPosts}
+                    />
+
+                    <EditPost
+                      postCreatorEmail={post.userEmail}
+                      postID={post.id}
+                      getPosts={props.getPosts}
+                    />
+                  </div>
+                ) : (
+                  <b></b>
+                )}
+                <Card.Body style={{ width: "100%" }}>
                   <h4>{post.title}</h4>
                   <Card.Text>{post.body}</Card.Text>
                   <small style={{ fontSize: "10px" }}>

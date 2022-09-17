@@ -18,6 +18,7 @@ const AddPostForm = (props) => {
       postType: postType,
       imgUrl: imgUrl,
       createdBy: user.name,
+      userEmail: user.email
     };
     await axios.post(`${process.env.REACT_APP_SERVER}/post`, data);
     props.getPosts();
@@ -56,6 +57,9 @@ const AddPostForm = (props) => {
           <Form.Label>Title</Form.Label>
           <Form.Control
             type="title"
+            data-testid="title"
+            required
+            maxLength={255}
             placeholder="JavaScript is amazing 😉"
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -64,6 +68,8 @@ const AddPostForm = (props) => {
           <Form.Label>Add Your Post</Form.Label>
           <Form.Control
             as="textarea"
+            required
+            maxLength={1024}
             rows={3}
             onChange={(e) => setBody(e.target.value)}
           />
@@ -72,6 +78,7 @@ const AddPostForm = (props) => {
           <Form.Label>Add Image URL</Form.Label>
           <Form.Control
             type="url"
+            required
             placeholder="www.image.com"
             onChange={(e) => setImgUrl(e.target.value)}
           />
