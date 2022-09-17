@@ -14,7 +14,8 @@ const AddCommentForm = (props) => {
       comment: comment,
       postID: props.postID,
       createdBy: user.name,
-    };
+      userEmail: user.email
+    };//
     await axios.post(
       `${process.env.REACT_APP_SERVER}/comment/${props.postID}`,
       data
@@ -46,6 +47,7 @@ const AddCommentForm = (props) => {
                   <Form.Control
                     as="textarea"
                     required
+                    maxLength={255}
                     placeholder="Leave a comment here"
                     style={{ height: "100%", width: "100%" }}
                     onChange={(e) => {
