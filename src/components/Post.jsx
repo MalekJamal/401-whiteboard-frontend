@@ -5,16 +5,13 @@ import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
-import { useAuth0 } from "@auth0/auth0-react";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 const Post = (props) => {
   const [show, setShow] = useState(false);
-  const [id, setID] = useState(false);
+  const [id, setID] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const { isAuthenticated } = useAuth0();
 
   return (
     <div
@@ -53,7 +50,7 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                {isAuthenticated && post.userEmail ? (
+                {post.userEmail === props.logedinEmail && (
                   <div
                     style={{
                       float: "right",
@@ -69,64 +66,92 @@ const Post = (props) => {
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
                       getPosts={props.getPosts}
+                      logedinEmail={props.logedinEmail}
+                      userName={props.userName}
                     />
 
                     <EditPost
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
                       getPosts={props.getPosts}
+                      logedinEmail={props.logedinEmail}
+                      userName={props.userName}
                     />
                   </div>
-                ) : (
-                  <b></b>
                 )}
                 <Card.Body style={{ width: "100%" }}>
                   <h4>{post.title}</h4>
                   <Card.Text>{post.body}</Card.Text>
-                  <small style={{ fontSize: "10px" }}>
-                    Added By {post.createdBy}
-                  </small>
+                  {props.isLogedin && (
+                    <small style={{ fontSize: "10px" }}>
+                      Added By {post.createdBy}
+                    </small>
+                  )}
                 </Card.Body>
-                <Card.Footer
+                <div
                   style={{
-                    width: "100%",
+                    width: "80%",
                     flexDirection: "column",
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "center",
+                    marginLeft: "15px",
+                    marginRight: "15px",
                   }}
                 >
-                  {post.Comments &&
+                  {props.isLogedin &&
+                    post.Comments &&
                     post.Comments.map((comment, idx) => (
                       <Comment
                         key={idx}
                         comment={comment.comment}
                         createdBy={comment.createdBy}
                         date={comment.createdAt}
+                        commentID={comment.id}
+                        postID={post.id}
+                        postCreatorEmail={post.userEmail}
+                        logedinEmail={props.logedinEmail}
+                        userName={props.userName}
+                        commentCreatorEmail={comment.userEmail}
+                        getPosts={props.getPosts}
                       />
                     ))}
-
-                  <Button
-                    style={{ margin: "5px" }}
-                    variant="dark"
-                    onClick={() => {
-                      handleShow(true);
-                      setID(post.id);
-                      props.getPosts();
-                    }}
-                  >
-                    Add Comment
-                  </Button>
-                  <AddCommentForm
-                    show={show}
-                    handleClose={handleClose}
-                    postID={id}
-                    getPosts={props.getPosts}
-                  />
-                </Card.Footer>
+                  {props.isLogedin && (
+                    <>
+                      <Button
+                        style={{ margin: "14px" }}
+                        variant="dark"
+                        onClick={() => {
+                          handleShow(true);
+                          setID(post.id);
+                          props.getPosts();
+                        }}
+                      >
+                        Add Comment
+                      </Button>
+                      <AddCommentForm
+                        show={show}
+                        handleClose={handleClose}
+                        postID={id}
+                        email={props.logedinEmail}
+                        userName={props.userName}
+                        getPosts={props.getPosts}
+                        isLogedin={props.isLogedin}
+                      />
+                    </>
+                  )}
+                </div>
               </Card>
             </Col>
           ))}
       </Row>
+      {props.posts.length === 0 && (
+        <Card style={{ margin: "20px", textAlign: "center" }}>
+          <Card.Body>
+            <h1>Wait !!</h1>
+          </Card.Body>
+        </Card>
+      )}
     </div>
   );
 };

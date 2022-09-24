@@ -1,12 +1,33 @@
 import Toast from "react-bootstrap/Toast";
-
+import DeleteComment from "./DeleteComment";
 function Comment(props) {
   return (
     <Toast style={{ marginTop: "8px", marginBottom: "8px" }}>
-      <Toast.Header>
-        <strong className="me-auto">{props.createdBy}</strong>
-        <small>{props.date.substring(0, 10)}</small>
-      </Toast.Header>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+        <div
+          style={{ margin: "5px", width: "max-content", textAlign: "right" }}
+        >
+          <small
+            style={{ margin: "5px", width: "max-content", textAlign: "right" }}
+          >
+            {props.createdBy}
+          </small>
+        </div>
+        <div style={{ float: "left", width: "max-content", margin: "5px" }}>
+          <small>{props.date.substring(0, 10)}</small>
+        </div>
+        {props.commentCreatorEmail === props.logedinEmail && (
+          <DeleteComment
+            commentID={props.commentID}
+            createdBy={props.createdBy}
+            commentCreatorEmail={props.commentCreatorEmail}
+            logedinEmail={props.logedinEmail}
+            userName={props.userName}
+            postID={props.postID}
+            getPosts={props.getPosts}
+          />
+        )}
+      </div>
       <Toast.Body>{props.comment}</Toast.Body>
     </Toast>
   );

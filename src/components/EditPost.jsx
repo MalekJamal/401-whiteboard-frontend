@@ -1,18 +1,16 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import EditIcon from "../icons/edit.png";
 import UpdateModal from "./UpdateModal";
 const EditPost = (props) => {
-  const { user } = useAuth0();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const [oldPost, setOldPost] = useState([]);
 
   const getPostByID = async (postCreatorEmail, postID) => {
-    if (postCreatorEmail === user.email) {
-      const data = await axios.get(`${process.env.REACT_APP_SERVER}/post/${postID}`);
+    if (postCreatorEmail === props.logedinEmail) {
+      const data = await axios.get(`${process.env.REACT_APP_LOCAL_SERVER}/post/${postID}`);
       setOldPost(data.data);
       setShow(true);
     } else {
@@ -28,6 +26,7 @@ const EditPost = (props) => {
   return (
     <div>
       <img
+      style={{cursor:"pointer"}}
         onClick={() => getPostByID(props.postCreatorEmail, props.postID)}
         title="Edit"
         src={EditIcon}

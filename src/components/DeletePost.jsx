@@ -1,15 +1,12 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React from "react";
 import deletIcon from "../icons/bin.png";
 import Swal from "sweetalert2";
 const DeletePost = (props) => {
-  const { user } = useAuth0();
-
   const deletePost = (postCreatorEmail) => {
-    if (postCreatorEmail === user.email) {
+    if (postCreatorEmail === props.logedinEmail) {
       Swal.fire({
-        title: user.name + ", Are you sure?",
+        title: props.userName + ", Are you sure?",
         text: "You won't be able to retrieve this post!",
         icon: "warning",
         showCancelButton: true,
@@ -18,7 +15,9 @@ const DeletePost = (props) => {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await axios.delete(`${process.env.REACT_APP_SERVER}/post/${props.postID}`);
+          await axios.delete(
+            `${process.env.REACT_APP_LOCAL_SERVER}/post/${props.postID}`
+          );
           props.getPosts();
         }
       });
@@ -36,6 +35,7 @@ const DeletePost = (props) => {
   return (
     <div>
       <img
+        style={{ cursor: "pointer" }}
         title="Delete"
         src={deletIcon}
         alt="delete"
