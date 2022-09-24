@@ -18,7 +18,7 @@ const AddPostForm = (props) => {
       userEmail: props.email,
       createdBy: props.userName,
     };
-    await axios.post(`${process.env.REACT_APP_LOCAL_SERVER}/post`, data);
+    await axios.post(`${process.env.REACT_APP_SERVER}/post`, data);
     props.getPosts();
   };
 

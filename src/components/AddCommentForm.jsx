@@ -17,7 +17,7 @@ const AddCommentForm = (props) => {
       userEmail: props.email,
     };
     await axios.post(
-      `${process.env.REACT_APP_LOCAL_SERVER}/comment/${props.postID}`,
+      `${process.env.REACT_APP_SERVER}/comment/${props.postID}`,
       data
     );
     props.getPosts();
