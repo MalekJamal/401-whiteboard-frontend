@@ -25,7 +25,7 @@ function App(props) {
     setUserName(userName);
   }
   const getPosts = async () => {
-    const posts = await axios.get(`${process.env.REACT_APP_LOCAL_SERVER}/post`);
+    const posts = await axios.get(`${process.env.REACT_APP_SERVER}/post`);
     setPostsData(posts.data);
 
   }
