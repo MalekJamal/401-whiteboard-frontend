@@ -1,4 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
@@ -8,7 +7,6 @@ const AddPostForm = (props) => {
   const [body, setBody] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const [postType, setPostType] = useState("General");
-  const { user } = useAuth0();
 
   const addPost = async (e) => {
     e.preventDefault();
@@ -17,10 +15,10 @@ const AddPostForm = (props) => {
       body: body,
       postType: postType,
       imgUrl: imgUrl,
-      createdBy: user.name,
-      userEmail: user.email
+      userEmail: props.email,
+      createdBy: props.userName,
     };
-    await axios.post(`${process.env.REACT_APP_SERVER}/post`, data);
+    await axios.post(`${process.env.REACT_APP_LOCAL_SERVER}/post`, data);
     props.getPosts();
   };
 
@@ -84,36 +82,16 @@ const AddPostForm = (props) => {
           />
         </Form.Group>
         <p>Choose The Type Of Your Post</p>
-        <Form.Group className="mb-3">
-          <Form.Check
-            type="radio"
-            label="Funny"
-            value="Funny"
-            name="postType"
-            onChange={(e) => setPostType(e.target.value)}
-          />
-          <Form.Check
-            type="radio"
-            label="Fact"
-            value="Fact"
-            name="postType"
-            onChange={(e) => setPostType(e.target.value)}
-          />
-          <Form.Check
-            type="radio"
-            label="General"
-            value="General"
-            name="postType"
-            onChange={(e) => setPostType(e.target.value)}
-          />
-          <Form.Check
-            type="radio"
-            label="Programming"
-            value="Programming"
-            name="postType"
-            onChange={(e) => setPostType(e.target.value)}
-          />
-        </Form.Group>
+        <Form.Select
+          onChange={(e) => setPostType(e.target.value)}
+          className="mb-3"
+          variant="dark"
+        >
+          <option value="General">General</option>
+          <option value="Funny">Funny</option>
+          <option value="Fact">Fact</option>
+          <option value="Programming">Programming</option>
+        </Form.Select>
         <Button variant="dark" type="submit">
           Add Post
         </Button>

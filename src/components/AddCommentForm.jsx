@@ -4,20 +4,20 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import axios from "axios";
-import { useAuth0 } from "@auth0/auth0-react";
+
 const AddCommentForm = (props) => {
   const [comment, setComment] = useState("");
-  const { user, isAuthenticated } = useAuth0();
+
   const addComment = async (e) => {
     e.preventDefault();
     const data = {
       comment: comment,
       postID: props.postID,
-      createdBy: user.name,
-      userEmail: user.email
-    };//
+      createdBy: props.userName,
+      userEmail: props.email,
+    };
     await axios.post(
-      `${process.env.REACT_APP_SERVER}/comment/${props.postID}`,
+      `${process.env.REACT_APP_LOCAL_SERVER}/comment/${props.postID}`,
       data
     );
     props.getPosts();
@@ -29,9 +29,6 @@ const AddCommentForm = (props) => {
           <Modal.Title>Add New Comment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {!isAuthenticated && <h3>Plz Login!!</h3>}
-
-          {isAuthenticated && (
             <>
               <Form
                 onSubmit={addComment}
@@ -66,7 +63,6 @@ const AddCommentForm = (props) => {
                 </Button>
               </Form>
             </>
-          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={props.handleClose}>

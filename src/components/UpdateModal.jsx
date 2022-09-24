@@ -19,7 +19,7 @@ const UpdateModal = (props) => {
       postType: postType,
     };
     const data = await axios.put(
-      `${process.env.REACT_APP_SERVER}/post/${props.postID}`,
+      `${process.env.REACT_APP_LOCAL_SERVER}/post/${props.postID}`,
       newPost
     );
     console.log(data.data);
