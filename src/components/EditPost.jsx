@@ -10,7 +10,7 @@ const EditPost = (props) => {
 
   const getPostByID = async (postCreatorEmail, postID) => {
     if (postCreatorEmail === props.logedinEmail) {
-      const data = await axios.get(`${process.env.REACT_APP_LOCAL_SERVER}/post/${postID}`);
+      const data = await axios.get(`${process.env.REACT_APP_SERVER}/post/${postID}`);
       setOldPost(data.data);
       setShow(true);
     } else {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -19,7 +19,7 @@ const UpdateModal = (props) => {
       postType: postType,
     };
     const data = await axios.put(
-      `${process.env.REACT_APP_LOCAL_SERVER}/post/${props.postID}`,
+      `${process.env.REACT_APP_SERVER}/post/${props.postID}`,
       newPost
     );
     console.log(data.data);

@@ -16,7 +16,7 @@ const DeletePost = (props) => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           await axios.delete(
-            `${process.env.REACT_APP_LOCAL_SERVER}/post/${props.postID}`
+            `${process.env.REACT_APP_SERVER}/post/${props.postID}`
           );
           props.getPosts();
         }

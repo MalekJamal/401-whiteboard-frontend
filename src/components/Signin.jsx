@@ -16,7 +16,7 @@ const Signin = (props) => {
 
     await axios
       .post(
-        `${process.env.REACT_APP_LOCAL_SERVER}/signin`,
+        `${process.env.REACT_APP_SERVER}/signin`,
         {},
         {
           headers: {

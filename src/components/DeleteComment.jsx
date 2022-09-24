@@ -17,7 +17,7 @@ const DeleteComment = (props) => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           await axios.delete(
-            `${process.env.REACT_APP_LOCAL_SERVER}/comment/${props.commentID}`
+            `${process.env.REACT_APP_SERVER}/comment/${props.commentID}`
           );
           props.getPosts();
         }

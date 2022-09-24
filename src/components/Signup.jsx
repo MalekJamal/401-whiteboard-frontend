@@ -18,7 +18,7 @@ const LoginButton = (props) => {
       password,
     };
     await axios
-      .post(`${process.env.REACT_APP_LOCAL_SERVER}/signup`, data)
+      .post(`${process.env.REACT_APP_SERVER}/signup`, data)
       .then((res) => {
         Swal.fire({
           icon: "success",
