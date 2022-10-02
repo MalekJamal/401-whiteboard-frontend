@@ -10,34 +10,44 @@ import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 import Signup from '../src/components/Signup';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signin from './components/Signin';
+import cookies from 'react-cookies';
 function App(props) {
 
   const [postsData, setPostsData] = useState([]);
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
-  const [logedinEmail, setLogedinEmail] = useState('');
   const [isLogedin, setIsLogedin] = useState(false);
-  const [userName, setUserName] = useState('');
 
-  const setLogin = (state, email, userName) => {
+  const setLogin = (state) => {
     setIsLogedin(state);
-    setLogedinEmail(email);
-    setUserName(userName);
   }
   const getPosts = async () => {
-    const posts = await axios.get(`${process.env.REACT_APP_SERVER}/post`);
-    setPostsData(posts.data);
+    try {
+      await axios.get(`${process.env.REACT_APP_SERVER}/post`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.load("token")}`,
+          },
+        }).then((res)=>{setPostsData(res.data);})
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
 
   }
 
   useEffect(() => {
-    getPosts();
-  }, [])
+    const token = cookies.load('token');
+    if (token) {
+      getPosts();
+      setIsLogedin(true);
+    }
+  }, []);
 
   return (
     <>
       <Router>
-        <NavBarComponent show={show} handleClose={handleClose} isLogedin={isLogedin} setLogin={setLogin} />
+        <NavBarComponent isLogedin={isLogedin}
+          setLogin={setLogin} />
         <div style={{
           display: "flex", justifyContent: "center",
           alignItems: "center", width: "100%", height: "100%", margin: "0",
@@ -46,19 +56,19 @@ function App(props) {
 
           <Routes>
             <Route exact path='/signin' element={<Signin condition={"not-modal"}
-              setLogin={setLogin} isLogedin={isLogedin}
+              setLogin={setLogin} isLogedin={isLogedin} getPosts={getPosts}
             />} />
 
             {isLogedin ? (
               <Route exact path="/add-post" element={<AddPostForm
-                posts={postsData} getPosts={getPosts} email={logedinEmail} userName={userName} />}>
+                posts={postsData} getPosts={getPosts} />}>
 
               </Route>
             ) : <Route exact path="/add-post" element={<Signin condition={"not-modal"} setLogin={setLogin}
               isLogedin={isLogedin} />}></Route>}
 
             <Route exact path="/" element={<Post posts={postsData} getPosts={getPosts}
-              isLogedin={isLogedin} logedinEmail={logedinEmail} userName={userName} />}></Route>
+              isLogedin={isLogedin} />}></Route>
 
             <Route exact path="/signup" element={<Signup />}></Route>
 

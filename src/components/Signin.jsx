@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import base64 from "base-64";
 import { Link, Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import cookies from "react-cookies";
 
 const Signin = (props) => {
   const [email, setEamil] = useState("");
@@ -25,9 +26,14 @@ const Signin = (props) => {
         }
       )
       .then((res) => {
-        props.setLogin(true, res.data.email, res.data.userName);
+        props.setLogin(true);
+        props.getPosts();
+        cookies.save("token", res.data.token);
+        cookies.save("userId", res.data.id);
+        cookies.save("userName", res.data.userName);
+        cookies.save("email", res.data.email);
       })
-      .catch((err) =>
+      .catch(() =>
         Swal.fire({
           icon: "error",
           title: "Enter correct Info!",
@@ -39,63 +45,6 @@ const Signin = (props) => {
 
   return (
     <>
-      <Modal show={props.show} onHide={props.handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Sign In</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form
-            onSubmit={signIn}
-            style={{
-              display: "flex",
-              width: "100%",
-              justifyContent: "center",
-              alignContent: "center",
-              padding: "15px",
-              height: "100%",
-              marginTop: "16px",
-              marginBottom: "16px",
-              flexDirection: "column",
-            }}
-          >
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                required
-                placeholder="example@example.com"
-                onChange={(e) => setEamil(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                required
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="dark" type="submit" onClick={props.handleClose}>
-              Sign In
-            </Button>
-          </Form>
-          <p style={{ marginTop: "10px", padding: "6px" }}>
-            Don't Have an Account?{" "}
-            <span
-              style={{ cursor: "pointer", padding: "6px" }}
-              onClick={() => console.log("Sign Up")}
-            >
-              Sign Up
-            </span>
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="dark" onClick={props.handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       {props.condition === "not-modal" && (
         <>
           <Form

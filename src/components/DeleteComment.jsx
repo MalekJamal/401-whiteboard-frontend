@@ -2,12 +2,13 @@ import axios from "axios";
 import React from "react";
 import binIcon from "../icons/bin.png";
 import Swal from "sweetalert2";
+import cookies from "react-cookies";
 const DeleteComment = (props) => {
   const deleteComment = async () => {
     // "comment/postId/userId"
-    if (props.commentCreatorEmail === props.logedinEmail) {
+    if (props.commentCreatorEmail === cookies.load("email")) {
       Swal.fire({
-        title: props.userName + ", Are you sure?",
+        title: cookies.load("userName") + ", Are you sure?",
         text: "You won't be able to retrieve this comment!",
         icon: "warning",
         showCancelButton: true,
@@ -17,7 +18,12 @@ const DeleteComment = (props) => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           await axios.delete(
-            `${process.env.REACT_APP_SERVER}/comment/${props.commentID}`
+            `${process.env.REACT_APP_SERVER}/comment/${props.commentID}`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookies.load("token")}`,
+              },
+            }
           );
           props.getPosts();
         }
@@ -44,7 +50,7 @@ const DeleteComment = (props) => {
         cursor: "pointer",
         marginLeft: "auto",
       }}
-      onClick={deleteComment}
+      onClick={() => deleteComment(props.commentCreatorEmail)}
     />
   );
 };

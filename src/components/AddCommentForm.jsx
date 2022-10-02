@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import axios from "axios";
-
+import cookies from "react-cookies";
 const AddCommentForm = (props) => {
   const [comment, setComment] = useState("");
 
@@ -13,12 +13,17 @@ const AddCommentForm = (props) => {
     const data = {
       comment: comment,
       postID: props.postID,
-      createdBy: props.userName,
-      userEmail: props.email,
+      createdBy: cookies.load("userName"),
+      userEmail: cookies.load("email"),
     };
     await axios.post(
       `${process.env.REACT_APP_SERVER}/comment/${props.postID}`,
-      data
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.load("token")}`,
+        },
+      }
     );
     props.getPosts();
   };
@@ -29,40 +34,40 @@ const AddCommentForm = (props) => {
           <Modal.Title>Add New Comment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <>
-              <Form
-                onSubmit={addComment}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column",
-                  width: "100%",
-                }}
-              >
-                <FloatingLabel label="Comments">
-                  <Form.Control
-                    as="textarea"
-                    required
-                    maxLength={255}
-                    placeholder="Leave a comment here"
-                    style={{ height: "100%", width: "100%" }}
-                    onChange={(e) => {
-                      setComment(e.target.value);
-                    }}
-                  />
-                </FloatingLabel>
+          <>
+            <Form
+              onSubmit={addComment}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                width: "100%",
+              }}
+            >
+              <FloatingLabel label="Comments">
+                <Form.Control
+                  as="textarea"
+                  required
+                  maxLength={255}
+                  placeholder="Leave a comment here"
+                  style={{ height: "100%", width: "100%" }}
+                  onChange={(e) => {
+                    setComment(e.target.value);
+                  }}
+                />
+              </FloatingLabel>
 
-                <Button
-                  variant="dark"
-                  style={{ margin: "15px" }}
-                  type="submit"
-                  onClick={props.handleClose}
-                >
-                  Submit
-                </Button>
-              </Form>
-            </>
+              <Button
+                variant="dark"
+                style={{ margin: "15px" }}
+                type="submit"
+                onClick={props.handleClose}
+              >
+                Submit
+              </Button>
+            </Form>
+          </>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={props.handleClose}>
