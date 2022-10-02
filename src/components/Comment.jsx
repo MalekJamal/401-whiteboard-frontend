@@ -1,5 +1,6 @@
 import Toast from "react-bootstrap/Toast";
 import DeleteComment from "./DeleteComment";
+import cookies from "react-cookies";
 function Comment(props) {
   return (
     <Toast style={{ marginTop: "8px", marginBottom: "8px" }}>
@@ -16,13 +17,11 @@ function Comment(props) {
         <div style={{ float: "left", width: "max-content", margin: "5px" }}>
           <small>{props.date.substring(0, 10)}</small>
         </div>
-        {props.commentCreatorEmail === props.logedinEmail && (
+        {props.commentCreatorEmail === cookies.load("email") && (
           <DeleteComment
             commentID={props.commentID}
             createdBy={props.createdBy}
             commentCreatorEmail={props.commentCreatorEmail}
-            logedinEmail={props.logedinEmail}
-            userName={props.userName}
             postID={props.postID}
             getPosts={props.getPosts}
           />

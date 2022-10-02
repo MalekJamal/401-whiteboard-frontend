@@ -1,12 +1,15 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-
+import { Navigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import cookies from 'react-cookies';
 const AddPostForm = (props) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const [postType, setPostType] = useState("General");
+  const [flip, setFlip] = useState(false);
 
   const addPost = async (e) => {
     e.preventDefault();
@@ -15,11 +18,29 @@ const AddPostForm = (props) => {
       body: body,
       postType: postType,
       imgUrl: imgUrl,
-      userEmail: props.email,
-      createdBy: props.userName,
+      userEmail: cookies.load('email'),
+      createdBy: cookies.load('userName'),
     };
-    await axios.post(`${process.env.REACT_APP_SERVER}/post`, data);
-    props.getPosts();
+    await axios.post(`${process.env.REACT_APP_SERVER}/post`, data,
+    {
+      headers: {
+        Authorization: `Bearer ${cookies.load("token")}`,
+      },
+    })
+    .then(()=>{
+      setFlip(true);
+      props.getPosts();
+    })
+    .catch((err)=>{
+      Swal.fire({
+        icon: "error",
+        title: "Somthing went worng!",
+        text: "Please try with correct info!!",
+        confirmButtonColor: "black",
+      });
+      console.error(err);
+    })
+    
   };
 
   return (
@@ -96,6 +117,7 @@ const AddPostForm = (props) => {
           Add Post
         </Button>
       </Form>
+      {flip && <Navigate to="/" />}
     </div>
   );
 };

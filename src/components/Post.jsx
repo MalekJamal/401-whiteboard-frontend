@@ -2,17 +2,23 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
+import cookies from "react-cookies";
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+    useEffect(()=>{
+    if(cookies.load('token')){
+      props.getPosts()
+    }
+  },[])
   return (
     <div
       style={{
@@ -50,7 +56,7 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                {post.userEmail === props.logedinEmail && (
+                {post.userEmail === cookies.load("email") && (
                   <div
                     style={{
                       float: "right",
@@ -66,16 +72,12 @@ const Post = (props) => {
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
                       getPosts={props.getPosts}
-                      logedinEmail={props.logedinEmail}
-                      userName={props.userName}
                     />
 
                     <EditPost
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
                       getPosts={props.getPosts}
-                      logedinEmail={props.logedinEmail}
-                      userName={props.userName}
                     />
                   </div>
                 )}
@@ -110,8 +112,6 @@ const Post = (props) => {
                         commentID={comment.id}
                         postID={post.id}
                         postCreatorEmail={post.userEmail}
-                        logedinEmail={props.logedinEmail}
-                        userName={props.userName}
                         commentCreatorEmail={comment.userEmail}
                         getPosts={props.getPosts}
                       />
@@ -133,10 +133,7 @@ const Post = (props) => {
                         show={show}
                         handleClose={handleClose}
                         postID={id}
-                        email={props.logedinEmail}
-                        userName={props.userName}
                         getPosts={props.getPosts}
-                        isLogedin={props.isLogedin}
                       />
                     </>
                   )}

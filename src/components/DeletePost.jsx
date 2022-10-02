@@ -2,11 +2,12 @@ import axios from "axios";
 import React from "react";
 import deletIcon from "../icons/bin.png";
 import Swal from "sweetalert2";
+import cookies from "react-cookies";
 const DeletePost = (props) => {
   const deletePost = (postCreatorEmail) => {
-    if (postCreatorEmail === props.logedinEmail) {
+    if (postCreatorEmail === cookies.load("email")) {
       Swal.fire({
-        title: props.userName + ", Are you sure?",
+        title: cookies.load("userName") + ", Are you sure?",
         text: "You won't be able to retrieve this post!",
         icon: "warning",
         showCancelButton: true,
@@ -16,7 +17,12 @@ const DeletePost = (props) => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           await axios.delete(
-            `${process.env.REACT_APP_SERVER}/post/${props.postID}`
+            `${process.env.REACT_APP_SERVER}/post/${props.postID}`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookies.load("token")}`,
+              },
+            }
           );
           props.getPosts();
         }

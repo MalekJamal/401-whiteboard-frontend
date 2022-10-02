@@ -1,32 +1,31 @@
 import axios from "axios";
 import React, { useState } from "react";
-import Swal from "sweetalert2";
 import EditIcon from "../icons/edit.png";
 import UpdateModal from "./UpdateModal";
+import cookies from "react-cookies";
 const EditPost = (props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const [oldPost, setOldPost] = useState([]);
 
   const getPostByID = async (postCreatorEmail, postID) => {
-    if (postCreatorEmail === props.logedinEmail) {
-      const data = await axios.get(`${process.env.REACT_APP_SERVER}/post/${postID}`);
+    if (postCreatorEmail === cookies.load("email")) {
+      const data = await axios.get(
+        `${process.env.REACT_APP_SERVER}/post/${postID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.load("token")}`,
+          },
+        }
+      );
       setOldPost(data.data);
       setShow(true);
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Not Allowed!!",
-        text: "Oops...",
-        footer: "You can't edit others posts!!",
-        confirmButtonColor: "black",
-      });
     }
   };
   return (
     <div>
       <img
-      style={{cursor:"pointer"}}
+        style={{ cursor: "pointer" }}
         onClick={() => getPostByID(props.postCreatorEmail, props.postID)}
         title="Edit"
         src={EditIcon}

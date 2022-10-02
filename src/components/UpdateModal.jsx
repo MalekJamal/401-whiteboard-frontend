@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-
+import cookies from "react-cookies";
 const UpdateModal = (props) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -18,11 +18,15 @@ const UpdateModal = (props) => {
       imgUrl: imgUrl === "" ? props.oldPost.imgUrl : imgUrl,
       postType: postType,
     };
-    const data = await axios.put(
+    await axios.put(
       `${process.env.REACT_APP_SERVER}/post/${props.postID}`,
-      newPost
+      newPost,
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.load("token")}`,
+        },
+      }
     );
-    console.log(data.data);
     props.getPosts();
   };
 
