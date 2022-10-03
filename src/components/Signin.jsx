@@ -31,7 +31,8 @@ const Signin = (props) => {
         cookies.save("token", res.data.token);
         cookies.save("userId", res.data.id);
         cookies.save("userName", res.data.userName);
-        cookies.save("email", res.data.email);
+        cookies.save("email", res.data.email);        
+        cookies.save("role", res.data.role);        
       })
       .catch(() =>
         Swal.fire({
