@@ -8,17 +8,18 @@ import Comment from "./Comment";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 import cookies from "react-cookies";
+import video from "../icons/video.mp4";
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-    useEffect(()=>{
-    if(cookies.load('token')){
-      props.getPosts()
+  useEffect(() => {
+    if (cookies.load("token")) {
+      props.getPosts();
     }
-  },[])
+  }, []);
   return (
     <div
       style={{
@@ -56,7 +57,7 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                {post.userEmail === cookies.load("email") && (
+                {"admin" === cookies.load("role") && (
                   <div
                     style={{
                       float: "right",
@@ -144,9 +145,27 @@ const Post = (props) => {
       </Row>
       {props.posts.length === 0 && (
         <Card style={{ margin: "20px", textAlign: "center" }}>
-          <Card.Body>
-            <h1>Wait !!</h1>
-          </Card.Body>
+          <div
+            style={{
+              textAlign: "center",
+              boxShadow: "10px 8px 8px 10px gray",
+              borderRadius: "5px",
+              padding: "3px",
+              margin: "20px",
+              width: "100%",
+            }}
+          >
+            <h1>Plz Login To See All Posts !!</h1>
+            <video
+              width="100%"
+              muted
+              autoPlay
+              loop
+              style={{ objectFit: "contain" }}
+            >
+              <source src={video} type="video/mp4" />
+            </video>
+          </div>
         </Card>
       )}
     </div>
