@@ -9,7 +9,7 @@ const EditPost = (props) => {
   const [oldPost, setOldPost] = useState([]);
 
   const getPostByID = async (postCreatorEmail, postID) => {
-    if (postCreatorEmail === cookies.load("email")) {
+    if ('admin' === cookies.load("role")) {
       const data = await axios.get(
         `${process.env.REACT_APP_SERVER}/post/${postID}`,
         {

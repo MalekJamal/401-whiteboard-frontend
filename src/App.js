@@ -64,7 +64,8 @@ function App(props) {
                 posts={postsData} getPosts={getPosts} />}>
 
               </Route>
-            ) : <Route exact path="/add-post" element={<Signin condition={"not-modal"} setLogin={setLogin}
+            ) : <Route exact path="/add-post" element={<Signin condition={"not-modal"} 
+              setLogin={setLogin}
               isLogedin={isLogedin} />}></Route>}
 
             <Route exact path="/" element={<Post posts={postsData} getPosts={getPosts}

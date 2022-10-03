@@ -27,20 +27,21 @@ const Signin = (props) => {
       )
       .then((res) => {
         props.setLogin(true);
-        props.getPosts();
+        //props.getPosts();
         cookies.save("token", res.data.token);
         cookies.save("userId", res.data.id);
         cookies.save("userName", res.data.userName);
         cookies.save("email", res.data.email);        
         cookies.save("role", res.data.role);        
       })
-      .catch(() =>
+      .catch((e) =>{
+        console.log(e)
         Swal.fire({
           icon: "error",
           title: "Enter correct Info!",
           text: "Please try with correct info!!",
           confirmButtonColor: "black",
-        })
+        })}
       );
   };
 
