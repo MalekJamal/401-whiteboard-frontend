@@ -5,9 +5,10 @@ import Swal from "sweetalert2";
 import cookies from "react-cookies";
 const DeletePost = (props) => {
   const deletePost = (postCreatorEmail) => {
-    if (postCreatorEmail === cookies.load("email")) {
+    console.log()
+    if ('admin' === cookies.load("role")) {
       Swal.fire({
-        title: cookies.load("userName") + ", Are you sure?",
+        title: "Mr "+cookies.load("userName") + ", Are you sure?",
         text: "You won't be able to retrieve this post!",
         icon: "warning",
         showCancelButton: true,
