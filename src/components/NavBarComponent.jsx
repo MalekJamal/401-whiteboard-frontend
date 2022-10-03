@@ -66,6 +66,7 @@ function NavBarComponent(props) {
                     cookies.remove("userId");
                     cookies.remove("userName");
                     cookies.remove("email");
+                    cookies.remove("role");
                   }}
                 >
                   Log out
