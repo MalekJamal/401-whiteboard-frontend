@@ -3,12 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-
+import PostContextProvider from './components/contexts/PostContext';
+import AuthContextProvider from './components/contexts/UserAuth';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <App />
+    <AuthContextProvider>
+      <PostContextProvider>
+          <App />
+      </PostContextProvider>
+    </AuthContextProvider>
   </React.StrictMode>
 );
 

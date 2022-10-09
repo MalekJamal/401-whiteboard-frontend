@@ -1,53 +1,14 @@
-import axios from "axios";
-import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
-import base64 from "base-64";
 import { Link, Navigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import cookies from "react-cookies";
-
+import { useContext } from "react";
+import { AuthContext } from "./contexts/UserAuth";
 const Signin = (props) => {
-  const [email, setEamil] = useState("");
-  const [password, setPassword] = useState("");
-
-  const signIn = async (e) => {
-    e.preventDefault();
-
-    const encoded = base64.encode(`${email}:${password}`);
-
-    await axios
-      .post(
-        `${process.env.REACT_APP_SERVER}/signin`,
-        {},
-        {
-          headers: {
-            Authorization: `Basic ${encoded}`,
-          },
-        }
-      )
-      .then((res) => {
-        props.setLogin(true);
-        //props.getPosts();
-        cookies.save("token", res.data.token);
-        cookies.save("userId", res.data.id);
-        cookies.save("userName", res.data.userName);
-        cookies.save("email", res.data.email);        
-        cookies.save("role", res.data.role);        
-      })
-      .catch((e) =>{
-        console.log(e)
-        Swal.fire({
-          icon: "error",
-          title: "Enter correct Info!",
-          text: "Please try with correct info!!",
-          confirmButtonColor: "black",
-        })}
-      );
-  };
+  
+  const {signIn, isAuth} = useContext(AuthContext);
 
   return (
-    <>
-      {props.condition === "not-modal" && (
+    
+      
         <>
           <Form
             onSubmit={signIn}
@@ -71,19 +32,20 @@ const Signin = (props) => {
                 type="email"
                 required
                 placeholder="example@example.com"
-                onChange={(e) => setEamil(e.target.value)}
+                name='email'
               />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                name="password"
                 required
                 autoComplete="on"
-                onChange={(e) => setPassword(e.target.value)}
+                
               />
             </Form.Group>
-            <Button variant="dark" type="submit" onClick={props.handleClose}>
+            <Button variant="dark" type="submit">
               Sign In
             </Button>
           </Form>
@@ -97,10 +59,8 @@ const Signin = (props) => {
               </span>
             </Link>
           </p>
-          {props.isLogedin && <Navigate to="/" />}
+          {isAuth && <Navigate to="/" />}
         </>
-      )}
-    </>
   );
 };
 

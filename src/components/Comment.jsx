@@ -1,7 +1,10 @@
 import Toast from "react-bootstrap/Toast";
 import DeleteComment from "./DeleteComment";
 import cookies from "react-cookies";
+import { useContext } from "react";
+import { AuthContext } from "./contexts/UserAuth";
 function Comment(props) {
+  const { role } = useContext(AuthContext);
   return (
     <Toast style={{ marginTop: "8px", marginBottom: "8px" }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
@@ -17,7 +20,8 @@ function Comment(props) {
         <div style={{ float: "left", width: "max-content", margin: "5px" }}>
           <small>{props.date.substring(0, 10)}</small>
         </div>
-        {props.commentCreatorEmail === cookies.load("email") && (
+        {(role === "admin" ||
+          props.commentCreatorEmail === cookies.load("email")) && (
           <DeleteComment
             commentID={props.commentID}
             createdBy={props.createdBy}

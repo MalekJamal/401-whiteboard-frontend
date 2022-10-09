@@ -1,14 +1,18 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useContext } from "react";
 import { Form } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import cookies from "react-cookies";
+import { PostContext } from "./contexts/PostContext";
 const UpdateModal = (props) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const [postType, setPostType] = useState("General");
+
+  const {getPosts} = useContext(PostContext);
 
   const updatePost = async (e) => {
     e.preventDefault();
@@ -27,7 +31,7 @@ const UpdateModal = (props) => {
         },
       }
     );
-    props.getPosts();
+    getPosts();
   };
 
   return (

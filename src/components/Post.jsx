@@ -2,23 +2,29 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
 import cookies from "react-cookies";
 import video from "../icons/video.mp4";
+import { AuthContext } from "./contexts/UserAuth";
+import { PostContext } from "./contexts/PostContext";
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(0);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const { isAuth, checkToken, role } = useContext(AuthContext);
+  const { postsData, getPosts } = useContext(PostContext);
   useEffect(() => {
     if (cookies.load("token")) {
-      props.getPosts();
+      checkToken();
+      getPosts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div
@@ -33,8 +39,8 @@ const Post = (props) => {
       }}
     >
       <Row xs={1} md={3} className="g-4">
-        {props.posts &&
-          props.posts.map((post, idx) => (
+        {postsData &&
+          postsData.map((post, idx) => (
             <Col key={idx}>
               <Card
                 style={{
@@ -57,7 +63,8 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                {"admin" === cookies.load("role") && (
+                {(role === "admin" ||
+                  post.userEmail === cookies.load("email")) && (
                   <div
                     style={{
                       float: "right",
@@ -72,20 +79,18 @@ const Post = (props) => {
                     <DeletePost
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
-                      getPosts={props.getPosts}
                     />
 
                     <EditPost
                       postCreatorEmail={post.userEmail}
                       postID={post.id}
-                      getPosts={props.getPosts}
                     />
                   </div>
                 )}
                 <Card.Body style={{ width: "100%" }}>
                   <h4>{post.title}</h4>
                   <Card.Text>{post.body}</Card.Text>
-                  {props.isLogedin && (
+                  {isAuth && (
                     <small style={{ fontSize: "10px" }}>
                       Added By {post.createdBy}
                     </small>
@@ -102,7 +107,7 @@ const Post = (props) => {
                     marginRight: "15px",
                   }}
                 >
-                  {props.isLogedin &&
+                  {isAuth &&
                     post.Comments &&
                     post.Comments.map((comment, idx) => (
                       <Comment
@@ -117,7 +122,7 @@ const Post = (props) => {
                         getPosts={props.getPosts}
                       />
                     ))}
-                  {props.isLogedin && (
+                  {isAuth && (
                     <>
                       <Button
                         style={{ margin: "14px" }}
@@ -125,7 +130,7 @@ const Post = (props) => {
                         onClick={() => {
                           handleShow(true);
                           setID(post.id);
-                          props.getPosts();
+                          getPosts();
                         }}
                       >
                         Add Comment
@@ -143,7 +148,7 @@ const Post = (props) => {
             </Col>
           ))}
       </Row>
-      {props.posts.length === 0 && (
+      {postsData.length === 0 && (
         <Card style={{ margin: "20px", textAlign: "center" }}>
           <div
             style={{
