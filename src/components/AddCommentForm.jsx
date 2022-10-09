@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import axios from "axios";
 import cookies from "react-cookies";
+import { PostContext } from "./contexts/PostContext";
 const AddCommentForm = (props) => {
   const [comment, setComment] = useState("");
-
+  const {getPosts } = useContext(PostContext);
   const addComment = async (e) => {
     e.preventDefault();
     const data = {
@@ -25,7 +26,7 @@ const AddCommentForm = (props) => {
         },
       }
     );
-    props.getPosts();
+    getPosts();
   };
   return (
     <>

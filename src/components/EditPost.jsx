@@ -8,25 +8,25 @@ const EditPost = (props) => {
   const handleClose = () => setShow(false);
   const [oldPost, setOldPost] = useState([]);
 
-  const getPostByID = async (postCreatorEmail, postID) => {
-    if ('admin' === cookies.load("role")) {
-      const data = await axios.get(
-        `${process.env.REACT_APP_SERVER}/post/${postID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookies.load("token")}`,
-          },
-        }
-      );
-      setOldPost(data.data);
-      setShow(true);
-    }
+
+  const getPostByID = async (postID) => {
+    const data = await axios.get(
+      `${process.env.REACT_APP_SERVER}/post/${postID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.load("token")}`,
+        },
+      }
+    );
+    setOldPost(data.data);
+    setShow(true);
   };
+
   return (
     <div>
       <img
         style={{ cursor: "pointer" }}
-        onClick={() => getPostByID(props.postCreatorEmail, props.postID)}
+        onClick={() => getPostByID(props.postID)}
         title="Edit"
         src={EditIcon}
         alt="delete"
@@ -37,7 +37,6 @@ const EditPost = (props) => {
         handleClose={handleClose}
         oldPost={oldPost}
         postID={props.postID}
-        getPosts={props.getPosts}
       />
     </div>
   );

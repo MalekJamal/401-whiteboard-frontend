@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import { Button, NavItem } from "react-bootstrap";
 import cookies from "react-cookies";
 import personIcon from "../icons/man.png";
-function NavBarComponent(props) {
+import { useContext } from "react";
+import { AuthContext } from "./contexts/UserAuth";
+import { PostContext } from "./contexts/PostContext";
+function NavBarComponent() {
+  const { isAuth, setIsAuth } = useContext(AuthContext);
+  const { setPostsData } = useContext(PostContext);
   return (
     <>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -18,7 +23,7 @@ function NavBarComponent(props) {
             Home
           </Link>
         </NavItem>
-        {!false && (
+        {
           <NavItem>
             <Link
               to="/add-post"
@@ -28,8 +33,8 @@ function NavBarComponent(props) {
               Add Post
             </Link>
           </NavItem>
-        )}
-        {!props.isLogedin && (
+        }
+        {!isAuth && (
           <NavItem>
             <Link
               to="/signin"
@@ -45,7 +50,7 @@ function NavBarComponent(props) {
             </Link>
           </NavItem>
         )}
-        {props.isLogedin && (
+        {isAuth && (
           <>
             <NavItem>
               <Link
@@ -61,12 +66,14 @@ function NavBarComponent(props) {
                 <Button
                   variant="light"
                   onClick={() => {
-                    props.setLogin(false);
+                    setIsAuth(false);
                     cookies.remove("token");
                     cookies.remove("userId");
                     cookies.remove("userName");
                     cookies.remove("email");
                     cookies.remove("role");
+                    cookies.remove("capabilities");
+                    setPostsData([]);
                   }}
                 >
                   Log out

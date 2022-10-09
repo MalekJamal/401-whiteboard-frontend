@@ -1,47 +1,9 @@
-import axios from "axios";
-import React, { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import cookies from 'react-cookies';
+import { useContext } from "react";
+import { PostContext } from "./contexts/PostContext";
 const AddPostForm = (props) => {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
-  const [postType, setPostType] = useState("General");
-  const [flip, setFlip] = useState(false);
-
-  const addPost = async (e) => {
-    e.preventDefault();
-    const data = {
-      title: title,
-      body: body,
-      postType: postType,
-      imgUrl: imgUrl,
-      userEmail: cookies.load('email'),
-      createdBy: cookies.load('userName'),
-    };
-    await axios.post(`${process.env.REACT_APP_SERVER}/post`, data,
-    {
-      headers: {
-        Authorization: `Bearer ${cookies.load("token")}`,
-      },
-    })
-    .then(()=>{
-      setFlip(true);
-      props.getPosts();
-    })
-    .catch((err)=>{
-      Swal.fire({
-        icon: "error",
-        title: "Somthing went worng!",
-        text: "Please try with correct info!!",
-        confirmButtonColor: "black",
-      });
-      console.error(err);
-    })
-    
-  };
+  const { setPostType, flip, addPost,} = useContext(PostContext);
 
   return (
     <div
@@ -80,7 +42,7 @@ const AddPostForm = (props) => {
             required
             maxLength={255}
             placeholder="JavaScript is amazing 😉"
-            onChange={(e) => setTitle(e.target.value)}
+            name='title'
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -90,7 +52,7 @@ const AddPostForm = (props) => {
             required
             maxLength={1024}
             rows={3}
-            onChange={(e) => setBody(e.target.value)}
+            name='body'
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -99,7 +61,7 @@ const AddPostForm = (props) => {
             type="url"
             required
             placeholder="www.image.com"
-            onChange={(e) => setImgUrl(e.target.value)}
+            name='imgUrl'
           />
         </Form.Group>
         <p>Choose The Type Of Your Post</p>
