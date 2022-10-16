@@ -5,12 +5,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import PostContextProvider from './components/contexts/PostContext';
 import AuthContextProvider from './components/contexts/UserAuth';
+import CommentContextProvider from './components/contexts/CommentContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
       <PostContextProvider>
+        <CommentContextProvider>
           <App />
+        </CommentContextProvider>
       </PostContextProvider>
     </AuthContextProvider>
   </React.StrictMode>

@@ -7,7 +7,6 @@ import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
 import DeletePost from "./DeletePost";
 import EditPost from "./EditPost";
-import cookies from "react-cookies";
 import video from "../icons/video.mp4";
 import { AuthContext } from "./contexts/UserAuth";
 import { PostContext } from "./contexts/PostContext";
@@ -17,11 +16,11 @@ const Post = (props) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const { isAuth, checkToken, role } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { postsData, getPosts } = useContext(PostContext);
+  // console.log(user);
   useEffect(() => {
-    if (cookies.load("token")) {
-      checkToken();
+    if (user.isAuth) {
       getPosts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,8 +62,8 @@ const Post = (props) => {
                     objectFit: "cover",
                   }}
                 />
-                {(role === "admin" ||
-                  post.userEmail === cookies.load("email")) && (
+                {(user.user.role === "admin" ||
+                  post.userEmail === user.user.email) && (
                   <div
                     style={{
                       float: "right",
@@ -90,7 +89,7 @@ const Post = (props) => {
                 <Card.Body style={{ width: "100%" }}>
                   <h4>{post.title}</h4>
                   <Card.Text>{post.body}</Card.Text>
-                  {isAuth && (
+                  {user.isAuth && (
                     <small style={{ fontSize: "10px" }}>
                       Added By {post.createdBy}
                     </small>
@@ -107,7 +106,7 @@ const Post = (props) => {
                     marginRight: "15px",
                   }}
                 >
-                  {isAuth &&
+                  {user.isAuth &&
                     post.Comments &&
                     post.Comments.map((comment, idx) => (
                       <Comment
@@ -122,7 +121,7 @@ const Post = (props) => {
                         getPosts={props.getPosts}
                       />
                     ))}
-                  {isAuth && (
+                  {user.isAuth && (
                     <>
                       <Button
                         style={{ margin: "14px" }}

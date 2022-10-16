@@ -3,15 +3,20 @@ import axios from "axios";
 import base64 from "base-64";
 import Swal from "sweetalert2";
 import cookies from "react-cookies";
+import { AuthReducer, initialState } from "../reducers/AuthReducer";
+import { useReducer } from "react";
+import { login, logoutHandler } from "../actions/AuthAction";
 export const AuthContext = createContext();
 
 const AuthContextProvider = (props) => {
   const [isAuth, setIsAuth] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [flip, setFlip] = useState(false);
-  const [role, setRole] = useState('');
-  const [user, setUser] = useState({});
-  const [capabilities, setCapabilities] = useState('');
+  const [role, setRole] = useState("");
+  // const [user, setUser] = useState({});
+  const [capabilities, setCapabilities] = useState("");
+
+  const [user, dispatch] = useReducer(AuthReducer, initialState);
 
   const signUP = async (e) => {
     e.preventDefault();
@@ -42,69 +47,49 @@ const AuthContextProvider = (props) => {
       );
   };
 
-
   const signIn = async (e) => {
     e.preventDefault();
-    const data={
-        password: e.target.password.value,
-        email: e.target.email.value
-    }
+    const data = {
+      password: e.target.password.value,
+      email: e.target.email.value,
+    };
     const encoded = base64.encode(`${data.email}:${data.password}`);
-
-    await axios
-      .post(
-        `${process.env.REACT_APP_SERVER}/signin`,
-        {},
-        {
-          headers: {
-            Authorization: `Basic ${encoded}`,
-          },
-        }
-      )
-      .then((res) => {
-        setIsAuth(true);
-        cookies.save("token", res.data.token);
-        cookies.save("userId", res.data.id);
-        cookies.save("userName", res.data.userName);
-        cookies.save("email", res.data.email);
-        cookies.save("role", res.data.role);
-        cookies.save("capabilities", res.data.capabilities);
-      })
-      .catch((e) => {
-        console.log(e);
-        Swal.fire({
-          icon: "error",
-          title: "Enter correct Info!",
-          text: "Please try with correct info!!",
-          confirmButtonColor: "black",
-        });
-      });
+    login(dispatch, encoded);
   };
 
-  const getUserInfo = async(id)=>{
-    setUser('');
-  }
-
-  const checkToken = ()=>{
-    const token = cookies.load('token');
+  const getUserInfo = async (id) => {
+    // setUser('');
+  };
+  const logout = () => {
+    logoutHandler(dispatch);
+  };
+  const checkToken = () => {
+    const token = cookies.load("token");
     if (token) {
-        setRole(cookies.load('role'));
-        setCapabilities(cookies.load('capabilities'));
-        setIsAuth(true);
-        getUserInfo();
+      setRole(cookies.load("role"));
+      setCapabilities(cookies.load("capabilities"));
+      setIsAuth(true);
+      getUserInfo();
     }
-  }
+  };
 
-  const value = { 
-    signIn, isAuth, 
-    setIsAuth, flip, confirmPassword, setConfirmPassword, 
-    signUP, checkToken, role, capabilities, user
- };
+  const value = {
+    signIn,
+    isAuth,
+    setIsAuth,
+    flip,
+    confirmPassword,
+    setConfirmPassword,
+    signUP,
+    checkToken,
+    role,
+    capabilities,
+    user,
+    logout,
+  };
 
   return (
-    <AuthContext.Provider value={value}>
-        {props.children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
   );
 };
 

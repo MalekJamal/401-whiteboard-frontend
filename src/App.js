@@ -12,7 +12,7 @@ import Signin from './components/Signin';
 import { AuthContext } from './components/contexts/UserAuth';
 function App(props) {
 
-  const { isAuth, checkToken, } = useContext(AuthContext);
+  const { user, checkToken, } = useContext(AuthContext);
 
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function App(props) {
           <Routes>
             <Route exact path='/signin' element={<Signin />} />
 
-            {isAuth ? (
+            {user.isAuth ? (
               <Route exact path="/add-post" element={<AddPostForm />}>
 
               </Route>
