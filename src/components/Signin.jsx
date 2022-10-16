@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "./contexts/UserAuth";
 const Signin = (props) => {
   
-  const {signIn, isAuth} = useContext(AuthContext);
+  const { signIn, user } = useContext(AuthContext);
 
   return (
     
@@ -59,7 +59,7 @@ const Signin = (props) => {
               </span>
             </Link>
           </p>
-          {isAuth && <Navigate to="/" />}
+          {user.isAuth && <Navigate to="/" />}
         </>
   );
 };

@@ -1,33 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
-import axios from "axios";
-import cookies from "react-cookies";
-import { PostContext } from "./contexts/PostContext";
+import { CommentContext } from "./contexts/CommentContext";
 const AddCommentForm = (props) => {
-  const [comment, setComment] = useState("");
-  const {getPosts } = useContext(PostContext);
-  const addComment = async (e) => {
-    e.preventDefault();
-    const data = {
-      comment: comment,
-      postID: props.postID,
-      createdBy: cookies.load("userName"),
-      userEmail: cookies.load("email"),
-    };
-    await axios.post(
-      `${process.env.REACT_APP_SERVER}/comment/${props.postID}`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${cookies.load("token")}`,
-        },
-      }
-    );
-    getPosts();
-  };
+  // const [comment, setComment] = useState("");
+  // const {getPosts } = useContext(PostContext);
+  const {addComment} = useContext(CommentContext);
+ 
   return (
     <>
       <Modal show={props.show} onHide={props.handleClose}>
@@ -53,12 +34,11 @@ const AddCommentForm = (props) => {
                   maxLength={255}
                   placeholder="Leave a comment here"
                   style={{ height: "100%", width: "100%" }}
-                  onChange={(e) => {
-                    setComment(e.target.value);
-                  }}
+                  name='comment'
+                  
                 />
               </FloatingLabel>
-
+              <input hidden name='postID' defaultValue={props.postID}/>
               <Button
                 variant="dark"
                 style={{ margin: "15px" }}

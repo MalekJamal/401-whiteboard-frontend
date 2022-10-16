@@ -5,10 +5,9 @@ import cookies from "react-cookies";
 import personIcon from "../icons/man.png";
 import { useContext } from "react";
 import { AuthContext } from "./contexts/UserAuth";
-import { PostContext } from "./contexts/PostContext";
 function NavBarComponent() {
-  const { isAuth, setIsAuth } = useContext(AuthContext);
-  const { setPostsData } = useContext(PostContext);
+  const { user, logout } = useContext(AuthContext);
+  
   return (
     <>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -34,7 +33,7 @@ function NavBarComponent() {
             </Link>
           </NavItem>
         }
-        {!isAuth && (
+        {!user.isAuth && (
           <NavItem>
             <Link
               to="/signin"
@@ -50,7 +49,7 @@ function NavBarComponent() {
             </Link>
           </NavItem>
         )}
-        {isAuth && (
+        {user.isAuth && (
           <>
             <NavItem>
               <Link
@@ -66,14 +65,7 @@ function NavBarComponent() {
                 <Button
                   variant="light"
                   onClick={() => {
-                    setIsAuth(false);
-                    cookies.remove("token");
-                    cookies.remove("userId");
-                    cookies.remove("userName");
-                    cookies.remove("email");
-                    cookies.remove("role");
-                    cookies.remove("capabilities");
-                    setPostsData([]);
+                    logout();
                   }}
                 >
                   Log out
@@ -95,7 +87,7 @@ function NavBarComponent() {
                 width="50px"
               />
               <b style={{ color: "white", textAlign: "center" }}>
-                {cookies.load("userName")}
+                {JSON.parse(localStorage.getItem('userName'))}
               </b>
             </div>
           </>

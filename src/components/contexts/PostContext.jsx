@@ -1,13 +1,17 @@
-import axios from "axios";
-import cookies from "react-cookies";
 import { useState, createContext } from "react";
 import Swal from "sweetalert2";
+import { fetchPosts, deleteP, addNewPost } from "../actions/PostAction";
+import { useReducer } from "react";
+import { postReducer, postState } from "../reducers/PostReducer";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/UserAuth";
 export const PostContext = createContext();
 
 const PostContextProvider = (props) => {
-  const [postsData, setPostsData] = useState([]);
   const [postType, setPostType] = useState("General");
-  const [flip, setFlip] = useState(false);
+  const [flip, setFlip] = useState("");
+  const [postsData, dispatch] = useReducer(postReducer, postState);
+  const { user } = useContext(AuthContext);
 
   const addPost = async (e) => {
     e.preventDefault();
@@ -16,85 +20,62 @@ const PostContextProvider = (props) => {
       body: e.target.body.value,
       postType: postType,
       imgUrl: e.target.imgUrl.value,
-      userEmail: cookies.load("email"),
-      createdBy: cookies.load("userName"),
-      userID: cookies.load("userId"),
+      userEmail: user.user.email,
+      createdBy: user.user.userName,
+      userID: user.user.id,
     };
-    await axios
-      .post(`${process.env.REACT_APP_SERVER}/post`, data, {
-        headers: {
-          Authorization: `Bearer ${cookies.load("token")}`,
-        },
-      })
-      .then(() => {
-        setFlip(true);
-        setTimeout(() => {
-          setFlip(false);
-        }, 100);
-      })
-      .catch((err) => {
-        Swal.fire({
-          icon: "error",
-          title: "Somthing went worng!",
-          text: "Please try with correct info!!",
-          confirmButtonColor: "black",
-        });
-        console.error(err);
-      });
+
+    addNewPost(dispatch, { data, token: user.token, flip, setFlip });
   };
 
-  const getPosts = async () => {
+  const getPosts = () => {
     try {
-      await axios
-        .get(`${process.env.REACT_APP_SERVER}/post`, {
-          headers: {
-            Authorization: `Bearer ${cookies.load("token")}`,
-          },
-        })
-        .then((res) => {
-          setPostsData(res.data);
-        });
+      fetchPosts(dispatch);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const deletePost = (postID) => {
-    if (postID) {
-      Swal.fire({
-        title: "Mr " + cookies.load("userName") + ", Are you sure?",
-        text: "You won't be able to retrieve this post!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "red",
-        cancelButtonColor: "light",
-        confirmButtonText: "Yes, delete it!",
-      })
-        .then(async (result) => {
-          if (result.isConfirmed) {
-            await axios.delete(
-              `${process.env.REACT_APP_SERVER}/post/${postID}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${cookies.load("token")}`,
-                },
-              }
-            );
-            getPosts();
-          } /// i changed here
+  const deletePost = async (postID) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      getPosts();
+      if (postID) {
+        Swal.fire({
+          title:
+            "Mr " +
+            JSON.parse(localStorage.getItem("userName")) +
+            ", Are you sure?",
+          text: "You won't be able to retrieve this post!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "red",
+          cancelButtonColor: "light",
+          confirmButtonText: "Yes, delete it!",
         })
-        .catch((e) => {
-          Swal.fire({
-            icon: "error",
-            title: "Not Allowed!!",
-            text: "Oops...",
-            footer: "You can't delete others posts!!",
-            confirmButtonColor: "black",
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              deleteP(dispatch, { id: postID, token });
+              getPosts();
+            }
+          })
+          .catch((e) => {
+            Swal.fire({
+              icon: "error",
+              title: "Not Allowed!!",
+              text: "Oops...",
+              footer: "Somthing went wrong!!",
+              confirmButtonColor: "black",
+            });
+            console.log(e);
           });
-          console.log(e);
-        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
+
   const value = {
     postsData,
     getPosts,
@@ -102,8 +83,6 @@ const PostContextProvider = (props) => {
     setPostType,
     flip,
     deletePost,
-    setFlip,
-    setPostsData,
   };
   return (
     <PostContext.Provider value={value}>{props.children}</PostContext.Provider>
