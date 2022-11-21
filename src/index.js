@@ -6,16 +6,19 @@ import reportWebVitals from './reportWebVitals';
 import PostContextProvider from './components/contexts/PostContext';
 import AuthContextProvider from './components/contexts/UserAuth';
 import CommentContextProvider from './components/contexts/CommentContext';
+import { ChakraProvider } from '@chakra-ui/react'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <AuthContextProvider>
-      <PostContextProvider>
-        <CommentContextProvider>
-          <App />
-        </CommentContextProvider>
-      </PostContextProvider>
-    </AuthContextProvider>
+    <ChakraProvider>
+      <AuthContextProvider>
+        <PostContextProvider>
+          <CommentContextProvider>
+            <App />
+          </CommentContextProvider>
+        </PostContextProvider>
+      </AuthContextProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );
 

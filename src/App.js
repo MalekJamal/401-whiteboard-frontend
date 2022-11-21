@@ -10,6 +10,7 @@ import Signup from '../src/components/Signup';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signin from './components/Signin';
 import { AuthContext } from './components/contexts/UserAuth';
+import TestChakra from './components/TestChakra';
 function App(props) {
 
   const { user, checkToken, } = useContext(AuthContext);
@@ -25,11 +26,14 @@ function App(props) {
       <Router>
         <NavBarComponent />
 
-        <div style={{
+        <div
+         style={{
           display: "flex", justifyContent: "center",
-          alignItems: "center", width: "100%", height: "100%", margin: "0",
-          flexDirection: "column"
-        }}>
+          alignItems: "center", width: "100%",
+           height: "100%", margin: "0",
+          flexDirection: "row"
+        }}
+        >
 
           <Routes>
             <Route exact path='/signin' element={<Signin />} />

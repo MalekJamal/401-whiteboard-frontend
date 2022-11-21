@@ -23,7 +23,7 @@ export const fetchPosts = async(dispatch)=>{
 
 
 export const deleteP = async(dispatch, data) => {
-    console.log(data)
+  
     
             await axios.delete(
               `${process.env.REACT_APP_SERVER}/post/${data.id}`,

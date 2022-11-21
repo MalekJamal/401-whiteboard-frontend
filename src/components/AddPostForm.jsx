@@ -2,9 +2,21 @@ import { Button, Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { PostContext } from "./contexts/PostContext";
+import { useToast } from '@chakra-ui/react'
 const AddPostForm = (props) => {
   const { setPostType, flip, addPost,} = useContext(PostContext);
 
+  const toast = useToast()
+  if(flip)
+  toast({
+    title: 'Hey!',
+    description: "Your Post Added Successfully",
+    status: 'success',
+    duration: 9000,
+    isClosable: true,
+    position:"top"
+   
+  });
   return (
     <div
       style={{

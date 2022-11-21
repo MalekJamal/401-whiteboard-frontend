@@ -2,24 +2,25 @@ import axios from "axios";
 import React, { useState } from "react";
 import EditIcon from "../icons/edit.png";
 import UpdateModal from "./UpdateModal";
-import cookies from "react-cookies";
+import { useDisclosure } from "@chakra-ui/react";
+import TestChakra from "./TestChakra";
 const EditPost = (props) => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const [oldPost, setOldPost] = useState([]);
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const getPostByID = async (postID) => {
-    const data = await axios.get(
+    const { data } = await axios.get(
       `${process.env.REACT_APP_SERVER}/post/${postID}`,
       {
         headers: {
-          Authorization: `Bearer ${cookies.load("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
-    setOldPost(data.data);
-    setShow(true);
+    setOldPost(data);
+    setShow(onOpen);
   };
 
   return (
@@ -29,14 +30,15 @@ const EditPost = (props) => {
         onClick={() => getPostByID(props.postID)}
         title="Edit"
         src={EditIcon}
-        alt="delete"
+        alt="Edit"
         width={"20px"}
       />
       <UpdateModal
-        show={show}
-        handleClose={handleClose}
         oldPost={oldPost}
         postID={props.postID}
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
       />
     </div>
   );
