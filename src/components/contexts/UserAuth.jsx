@@ -64,10 +64,10 @@ const AuthContextProvider = (props) => {
     logoutHandler(dispatch);
   };
   const checkToken = () => {
-    const token = cookies.load("token");
+    const token = localStorage.getItem("token");
     if (token) {
-      setRole(cookies.load("role"));
-      setCapabilities(cookies.load("capabilities"));
+      setRole(localStorage.getItem("role"));
+      setCapabilities(localStorage.getItem("capabilities"));
       setIsAuth(true);
       getUserInfo();
     }

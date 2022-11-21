@@ -82,8 +82,8 @@ function NavBarComponent() {
             >
               <img
                 src={personIcon}
-                alt={cookies.load("userName")}
-                title={cookies.load("userName")}
+                alt={JSON.parse(localStorage.getItem("userName"))}
+                title={JSON.parse(localStorage.getItem("userName"))}
                 width="50px"
               />
               <b style={{ color: "white", textAlign: "center" }}>

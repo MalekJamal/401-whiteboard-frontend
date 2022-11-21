@@ -30,7 +30,6 @@ const CommentContextProvider = (props) => {
         }
       )
       .then((res) => {
-        console.log(res);
         getPosts();
       })
       .catch((e) => console.error(e));

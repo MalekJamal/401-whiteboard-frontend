@@ -1,7 +1,19 @@
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Button from "react-bootstrap/Button";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Flex,
+  Heading,
+  IconButton,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
 import AddCommentForm from "./AddCommentForm";
 import Comment from "./Comment";
@@ -26,127 +38,130 @@ const Post = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignContent: "center",
-        width: "80%",
-        height: "100%",
-        margin: "16px",
-        flexDirection: "column",
-      }}
+    <SimpleGrid
+      spacing={4}
+      templateColumns="repeat(auto-fill, minmax(400px, 1fr))"
     >
-      <Row xs={1} md={3} className="g-4">
-        {postsData &&
-          postsData.map((post, idx) => (
-            <Col key={idx}>
-              <Card
-                style={{
-                  marginTop: "15px",
-                  width: "100%",
-                  height: "100%",
-                  flexDirection: "column",
-                  display: "flex",
-                  alignItems: "center",
-                  boxShadow: "10px 10px 10px 10px #8888",
-                }}
-              >
-                <Card.Img
-                  variant="top"
-                  alt="Image"
-                  src={post.imgUrl}
+      {postsData &&
+        postsData.map((post, idx) => (
+          <Card
+          key={idx}
+            maxW="md"
+            style={{
+              marginTop: "15px",
+              width: "100%",
+              height: "100%",
+              flexDirection: "column",
+              display: "flex",
+              alignItems: "center",
+              boxShadow: "10px 10px 10px 10px #8888",
+            }}
+          >
+            <CardHeader>
+              <Flex spacing="4">
+                <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                  <Avatar
+                    name={post.createdBy}
+                  />
+
+                  <Box>
+                    <Heading size="sm">{post.createdBy}</Heading>
+                    {/* <Text>{post.createdBy}</Text> */}
+                  </Box>
+                </Flex>
+              </Flex>
+            </CardHeader>
+            <CardBody>
+              <Image
+                objectFit="cover"
+                src={post.imgUrl}
+                alt={post.title}
+                //   style={{
+                //     height: "300px",
+                //     maxHeight: "300px"
+                //   }}
+              />
+              {(user.user.role === "admin" ||
+                post.userEmail === user.user.email) && (
+                <Box
                   style={{
-                    height: "300px",
-                    maxHeight: "300px",
-                    objectFit: "cover",
+                    float: "right",
+                    clear: "both",
+                    marginLeft: "auto",
+                    marginTop: "8px",
+                    marginRight: "8px",
+                    display: "flex",
+                    gap: 18,
                   }}
-                />
-                {(user.user.role === "admin" ||
-                  post.userEmail === user.user.email) && (
-                  <div
-                    style={{
-                      float: "right",
-                      clear: "both",
-                      marginLeft: "auto",
-                      marginTop: "8px",
-                      marginRight: "8px",
-                      display: "flex",
-                      gap: 18,
+                  key={user.user.id}
+                >
+                  <DeletePost
+                    postCreatorEmail={post.userEmail}
+                    postID={post.id}
+                  />
+
+                  <EditPost
+                    postCreatorEmail={post.userEmail}
+                    postID={post.id}
+                  />
+                </Box>
+              )}
+              <br />
+              <Box>
+                <h4>{post.title}</h4>
+                <Text>{post.body}</Text>
+              </Box>
+            </CardBody>
+
+            <CardFooter
+              justify="space-between"
+              flexWrap="wrap"
+              sx={{
+                "& > button": {
+                  minW: "136px",
+                },
+              }}
+            >
+              {user.isAuth &&
+                post.Comments &&
+                post.Comments.map((comment, idx) => (
+                  <Comment
+                    key={idx}
+                    comment={comment.comment}
+                    createdBy={comment.createdBy}
+                    date={comment.createdAt}
+                    commentID={comment.id}
+                    postID={post.id}
+                    postCreatorEmail={post.userEmail}
+                    commentCreatorEmail={comment.userEmail}
+                    getPosts={props.getPosts}
+                  />
+                ))}
+              {user.isAuth && (
+                <>
+                  <Button
+                    flex="1"
+                    variant="ghost"
+                    style={{ margin: "0px" }}
+                    onClick={() => {
+                      handleShow(true);
+                      setID(post.id);
+                      getPosts();
                     }}
                   >
-                    <DeletePost
-                      postCreatorEmail={post.userEmail}
-                      postID={post.id}
-                    />
-
-                    <EditPost
-                      postCreatorEmail={post.userEmail}
-                      postID={post.id}
-                    />
-                  </div>
-                )}
-                <Card.Body style={{ width: "100%" }}>
-                  <h4>{post.title}</h4>
-                  <Card.Text>{post.body}</Card.Text>
-                  {user.isAuth && (
-                    <small style={{ fontSize: "10px" }}>
-                      Added By {post.createdBy}
-                    </small>
-                  )}
-                </Card.Body>
-                <div
-                  style={{
-                    width: "80%",
-                    flexDirection: "column",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginLeft: "15px",
-                    marginRight: "15px",
-                  }}
-                >
-                  {user.isAuth &&
-                    post.Comments &&
-                    post.Comments.map((comment, idx) => (
-                      <Comment
-                        key={idx}
-                        comment={comment.comment}
-                        createdBy={comment.createdBy}
-                        date={comment.createdAt}
-                        commentID={comment.id}
-                        postID={post.id}
-                        postCreatorEmail={post.userEmail}
-                        commentCreatorEmail={comment.userEmail}
-                        getPosts={props.getPosts}
-                      />
-                    ))}
-                  {user.isAuth && (
-                    <>
-                      <Button
-                        style={{ margin: "14px" }}
-                        variant="dark"
-                        onClick={() => {
-                          handleShow(true);
-                          setID(post.id);
-                          getPosts();
-                        }}
-                      >
-                        Add Comment
-                      </Button>
-                      <AddCommentForm
-                        show={show}
-                        handleClose={handleClose}
-                        postID={id}
-                        getPosts={props.getPosts}
-                      />
-                    </>
-                  )}
-                </div>
-              </Card>
-            </Col>
-          ))}
-      </Row>
+                    Comment
+                  </Button>
+                  <AddCommentForm
+                    show={show}
+                    handleClose={handleClose}
+                    postID={id}
+                    getPosts={props.getPosts}
+                  />
+                </>
+              )}
+            </CardFooter>
+          </Card>
+        ))}
       {postsData.length === 0 && (
         <Card style={{ margin: "20px", textAlign: "center" }}>
           <div
@@ -172,7 +187,7 @@ const Post = (props) => {
           </div>
         </Card>
       )}
-    </div>
+    </SimpleGrid>
   );
 };
 
