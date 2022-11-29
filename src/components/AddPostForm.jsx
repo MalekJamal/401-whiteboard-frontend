@@ -1,22 +1,68 @@
 import { Button, Form } from "react-bootstrap";
 import { Navigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { PostContext } from "./contexts/PostContext";
 import { useToast } from '@chakra-ui/react'
+import { addNewPost } from "../features/post/postSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from "sweetalert2";
 const AddPostForm = (props) => {
-  const { setPostType, flip, addPost,} = useContext(PostContext);
+  // const { setPostType, flip, addPost,} = useContext(PostContext);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [imgUrl, setImage] = useState("");
+  const [postType, setPostType] = useState("");
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
+  const dispatch = useDispatch();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const canSave = [title, body, imgUrl, postType].every(Boolean) && addRequestStatus === "idle";
+  const handleSavePost = (e)=>{
+    e.preventDefault();
+    console.log(JSON.parse(localStorage.getItem("currentUser")))
+    const data = {
+      title,
+      body,
+      postType,
+      imgUrl,
+      userEmail: JSON.parse(localStorage.getItem("currentUser")).email,
+      createdBy: JSON.parse(localStorage.getItem("currentUser")).userName,
+      userID: JSON.parse(localStorage.getItem("currentUser")).id,
+    };
+    if(canSave){
+      try {
+        setAddRequestStatus("pending");
+        dispatch(addNewPost(data));
+        setTitle("");
+        setBody("");
+        setImage("");
+        navigate("/");
+        toast({
+          title: 'Hey!',
+          description: "Your Post Added Successfully",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position:"top"   
+        });
+      } catch (error) {
+        toast({
+          title: "Somthing went worng!",
+          description: "Please try with correct info!!",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+          position:"top"
+        });
+        console.log(error);
+      } finally{
+        setAddRequestStatus("idle");
+      }
+    }
+  }
 
-  const toast = useToast()
-  if(flip)
-  toast({
-    title: 'Hey!',
-    description: "Your Post Added Successfully",
-    status: 'success',
-    duration: 9000,
-    isClosable: true,
-    position:"top"
-   
-  });
+  // if(flip)
   return (
     <div
       style={{
@@ -33,7 +79,7 @@ const AddPostForm = (props) => {
       }}
     >
       <Form
-        onSubmit={addPost}
+        onSubmit={handleSavePost}
         style={{
           display: "flex",
           width: "100%",
@@ -55,6 +101,7 @@ const AddPostForm = (props) => {
             maxLength={255}
             placeholder="JavaScript is amazing 😉"
             name='title'
+            onChange={(e)=> setTitle(e.target.value)}
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -65,6 +112,7 @@ const AddPostForm = (props) => {
             maxLength={1024}
             rows={3}
             name='body'
+            onChange={(e)=> setBody(e.target.value)}
           />
         </Form.Group>
         <Form.Group className="mb-3">
@@ -74,6 +122,7 @@ const AddPostForm = (props) => {
             required
             placeholder="www.image.com"
             name='imgUrl'
+            onChange={(e)=> setImage(e.target.value)}
           />
         </Form.Group>
         <p>Choose The Type Of Your Post</p>
@@ -91,7 +140,7 @@ const AddPostForm = (props) => {
           Add Post
         </Button>
       </Form>
-      {flip && <Navigate to="/" />}
+      {/* {flip && <Navigate to="/" />} */}
     </div>
   );
 };
