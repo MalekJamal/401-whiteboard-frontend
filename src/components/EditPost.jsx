@@ -3,10 +3,9 @@ import React, { useState } from "react";
 import EditIcon from "../icons/edit.png";
 import UpdateModal from "./UpdateModal";
 import { useDisclosure } from "@chakra-ui/react";
-import TestChakra from "./TestChakra";
+
 const EditPost = (props) => {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+
   const [oldPost, setOldPost] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -20,7 +19,7 @@ const EditPost = (props) => {
       }
     );
     setOldPost(data);
-    setShow(onOpen);
+
   };
 
   return (

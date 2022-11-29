@@ -8,10 +8,8 @@ import {
   CardHeader,
   Flex,
   Heading,
-  IconButton,
   Image,
   SimpleGrid,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useState } from "react";
@@ -22,6 +20,8 @@ import EditPost from "./EditPost";
 import video from "../icons/video.mp4";
 import { AuthContext } from "./contexts/UserAuth";
 import { PostContext } from "./contexts/PostContext";
+import { useSelector } from "react-redux";
+import { selectAllPosts } from "../features/post/postSlice";
 const Post = (props) => {
   const [show, setShow] = useState(false);
   const [id, setID] = useState(0);
@@ -29,8 +29,8 @@ const Post = (props) => {
   const handleShow = () => setShow(true);
 
   const { user } = useContext(AuthContext);
-  const { postsData, getPosts } = useContext(PostContext);
-  // console.log(user);
+  const {  getPosts } = useContext(PostContext);
+  const postsData = useSelector(selectAllPosts);
   useEffect(() => {
     if (user.isAuth) {
       getPosts();
